@@ -8,7 +8,7 @@
 // of a JObject is that it is an unordered list, then some implementations may not preserve
 // the order.
 
-using Common.JSON;
+using CommonJsonCode;
 using System;
 using System.IO;
 using System.Security.Cryptography;
