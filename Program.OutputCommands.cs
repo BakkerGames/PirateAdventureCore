@@ -1,4 +1,4 @@
-﻿// OutputCommands.cs - 01/17/2019
+﻿// OutputCommands.cs - 01/19/2019
 
 using System;
 using System.IO;
@@ -8,12 +8,30 @@ namespace PirateAdventure
 {
     partial class Program
     {
-        private static string CommandOutputFilename = "Documents\\Commands.txt";
+        private static string CommandOutputFilename;
 
         private static StringBuilder commandCodeText = new StringBuilder();
 
         public static void OutputCommands()
         {
+            Console.Write("Enter filename for storing commands: ");
+            CommandOutputFilename = Console.ReadLine();
+            if (string.IsNullOrEmpty(CommandOutputFilename))
+            {
+                Console.WriteLine("Filename not specified!");
+                Console.Write("Press enter to continue...");
+                Console.ReadLine();
+                return;
+            }
+            // handle a string with quotes, as from shift-right-click "Copy as path"
+            if (CommandOutputFilename.StartsWith("\""))
+            {
+                CommandOutputFilename = CommandOutputFilename.Substring(1);
+            }
+            if (CommandOutputFilename.EndsWith("\""))
+            {
+                CommandOutputFilename = CommandOutputFilename.Substring(0, CommandOutputFilename.Length - 1);
+            }
             for (int X = 0; X < _commandCount; X++)
             {
                 TestingWrite($"{X.ToString("000")}:");
@@ -125,11 +143,11 @@ namespace PirateAdventure
             try
             {
                 File.WriteAllText(CommandOutputFilename, commandCodeText.ToString());
-                Console.WriteLine("Commands written to Documents\\Commands.txt");
+                Console.WriteLine($"Commands written to {CommandOutputFilename}");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error while outputing: {ex.Message}");
+                Console.WriteLine($"Error while writing file: {ex.Message}");
             }
             Console.Write("Press enter to continue...");
             Console.ReadLine();
