@@ -1,15 +1,14 @@
-﻿// Program.SaveLoad.cs - 01/19/2019
+﻿// Program.SaveLoad.cs - 01/29/2019
 
 // Note: This Save/Load has checksum logic which relies on ordering of key/value pairs
-// in a JObject. When a JObject is converted to a string and back, if the order of the
-// key/value pairs is not the same, the checksum will fail. Also, if removing the checksum
-// value changes the order of the rest of the JObject, the checksum will fail. If this
-// is a possibility, the checksum logic will need to be altered. Since the JSON definition
-// of a JObject is that it is an unordered list, then some implementations may not preserve
-// the order.
+// in a JObject. When a JObject is serialized to a string and back, if the order of the
+// key/value pairs is not the same, the checksum will fail. If this is a possibility,
+// the checksum logic will need to be altered. Since the JSON.org definition of a JObject
+// is that it is an unordered list, then some implementations may not preserve the order.
 
 using CommonJsonCode;
 using System;
+using System.Globalization;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
@@ -65,7 +64,7 @@ namespace PirateAdventure
                 return false;
             }
             Console.Write("LOAD SAVE GAME FILE? [Y/N] ");
-            string answer = "Y"; //Console.ReadLine();
+            string answer = Console.ReadLine();
             if (!string.IsNullOrEmpty(answer) && !answer.ToUpper().StartsWith("Y"))
             {
                 Console.Write("DELETE OLD SAVE GAME FILE? [Y/N] ");
@@ -92,10 +91,10 @@ namespace PirateAdventure
             {
                 throw new SystemException("Incorrect SaveData file found");
             }
-            DateTime saveDateTime = DateTime.Parse((string)saveData.GetValue("savedate"));
+            string savedate = (string)saveData.GetValue("savedate");
+            DateTime saveDateTime = DateTime.Parse(savedate, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal);
             Console.WriteLine();
             Console.WriteLine($"LOADING DATA FROM {TimeZoneInfo.ConvertTimeFromUtc(saveDateTime, TimeZoneInfo.Local)}...");
-            Console.WriteLine();
             gameOver = (bool)saveData.GetValue("gameover");
             numMoves = (int)saveData.GetValue("nummoves");
             currRoomNumber = (int)saveData.GetValue("currroomnumber");
