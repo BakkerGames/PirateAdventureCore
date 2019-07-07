@@ -10,7 +10,7 @@
 *.xls
 *.xlsx
 _*.json
-*proj.user
+!*.user
 ~*.*
 BuildAll.bat
 BuildAll.log
